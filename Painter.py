@@ -108,6 +108,7 @@ def onLeftButtonUp(event):
         
         lastDraw=canvas.create_line(X.get(), Y.get(), event.x, event.y, fill=foreColor)
     elif what.get()==3:
+
         lastDraw=canvas.create_rectangle(X.get(), Y.get(), event.x, event.y,  outline=foreColor)
     elif what.get()==6:
 
