@@ -9,8 +9,10 @@ import os
 import glob
 import sys
 
+
 from PIL import Image,ImageTk
 from gen_xml import xml
+from hsv import HSV
 
 class UI:
     root = None
@@ -94,6 +96,9 @@ class callback:
                 # self.Img_Name = self.Img_Name.split(".", 1)[0]
                 # print('Img_Name',self.Img_Name)
                 Name = str(int(start_num) + self.counter)
+                # hsv = HSV()
+                # hsv.find_roi(self.Img,self.painter.record_rect[0])
+
                 self.xml.makexml(targefile,Name,Type,self.Img,self.painter.record_rect[0])
 
             self.counter = self.counter + 1
@@ -112,18 +117,26 @@ class callback:
             self.counter = self.counter - 1
             print('press Prev')
 
+            targefile = sys.argv[1]
+            Type = sys.argv[2]
+            start_num = sys.argv[3]
+            if(len(self.painter.record_rect) > 0):
+                Name = str(int(start_num) + self.counter)
+                # hsv = HSV()
+                # hsv.find_roi(self.Img,self.painter.record_rect[0])
+                self.xml.makexml(targefile,Name,Type,self.Img,self.painter.record_rect[0])
+
+            self.counter = self.counter + 1
+
             self.Img = self.Img_List[self.counter]
             self.Img_Name = self.Img_Name_List[self.counter]
 
             self.ui.update_img(self.Img)
             self.painter.Draw_rect()
             self.painter.img = self.Img
-
-
-
-
         else:
             print('No prev')
+
 class Function:
     array_of_img = [] # this if for store all of the image data
     file_name = []
@@ -169,16 +182,12 @@ class Painter:
         self.X.set(event.x)
         self.Y.set(event.y)
 
-        # self.canvas.create_rectangle(640,360,1200,700,  outline=self.foreColor,width=3)
-
-
         if self.what.get()==4:
             self.canvas.create_text(event.x, event.y, font=("微软雅黑", int(size)),text=text,fill=foreColor)
             self.what.set(1)
 
     #按住移動,畫圖
     def onLeftButtonMove(self,event):
-        print('x,y : ',(event.x,event.y))
         if self.yesno.get()==0:
             return
         if self.what.get()==3:
