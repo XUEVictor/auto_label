@@ -79,7 +79,7 @@ class callback:
     def __init__(self,ui):
         self.ui = ui
         self.Funct = Function()
-        self.Img_List,self.Img_Name_List = self.Funct.read_direct_img('img')
+        self.Img_List,self.Img_Name_List = self.Funct.read_direct_img('img/' + sys.argv[1] + '/')
         self.Img = self.Img_List[0]
         self.Img_Name = self.Img_Name_List[0]
         self.xml = xml()
