@@ -8,7 +8,8 @@ class HSV:
 
     def __init__(self):
         pass
-    def HSV_Mask(self,upper, lower, img):
+    def HSV_Mask(self,upper, lower, img_ori):
+        img = copy.deepcopy(img_ori)
         # 讀圖時是8,擴大到32
         im_bgr = np.float32(img)
         # 擴大後需要正規劃
@@ -69,7 +70,6 @@ class HSV:
         cv.drawContours(img_debug, [box], 0, (0, 0, 255), line_width)
         # cv.imshow('img_debug',img_debug)
         # cv.waitKey(0)
-
         return box
 
     def RerangePoint(self,img,box):

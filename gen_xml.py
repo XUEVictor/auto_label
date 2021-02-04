@@ -8,24 +8,32 @@ class xml:
     def makexml(self,targe_file,Name,Type,Image,rect):
         
         Pheight,Pwidth,Pdepth=Image.shape
-        cv2.imwrite('targe/' + targe_file +'/img/'+ Name + '.jpg',Image)
+        img_path = 'train/'+'img/'+ Name + '.jpg'
+        img_path2 = 'targe/'+ Type +'/img/'+ Name + '.jpg'
+        
+        cv2.imwrite(img_path,Image)
+        cv2.imwrite(img_path2,Image)
+
 
         xmlBuilder = Document()
         annotation = xmlBuilder.createElement("annotation")  # annotation標籤
 
         xmlBuilder.appendChild(annotation)
         folder = xmlBuilder.createElement("folder")#folder標籤
-        folderContent = xmlBuilder.createTextNode(targe_file)#目標資料夾
+        folderContent = xmlBuilder.createTextNode('img')#目標資料夾
         folder.appendChild(folderContent)
         annotation.appendChild(folder)
 
         filename = xmlBuilder.createElement("filename")#filename標籤
-        filenameContent = xmlBuilder.createTextNode(Name+".jpg")
+        filenameContent = xmlBuilder.createTextNode(Name + '.jpg')
         filename.appendChild(filenameContent)
         annotation.appendChild(filename)
 
+        path_path = os.path.abspath(os.path.dirname(__file__))
+        path_path = path_path +'/'+ img_path
+
         Path = xmlBuilder.createElement("path")#path 標籤
-        PathContent = xmlBuilder.createTextNode(os.path.abspath(os.path.dirname(__file__)))
+        PathContent = xmlBuilder.createTextNode(path_path)
         Path.appendChild(PathContent)
         annotation.appendChild(Path)
 
@@ -107,7 +115,6 @@ class xml:
         object.appendChild(bndbox)
 
         annotation.appendChild(object)
-
-        f = open('targe/' + targe_file +'/xml/'+ Name + ".xml", 'w')
+        f = open('train/'+'/xml/'+ Name + ".xml", 'w')
         xmlBuilder.writexml(f, indent='\t', newl='\n', addindent='\t', encoding='utf-8')
         f.close()
