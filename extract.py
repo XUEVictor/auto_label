@@ -137,10 +137,26 @@ class extract_obj:
     def Caldis(self,pt1,pt2):
         return math.sqrt((((pt1[1] - pt2[1])**2) + (pt1[0] - pt2[0])**2))
 
-    def exec(self,img_ori,img2,Mask):
+    def exec(self,img_ori,img_crop,Mask_crop):
         img1 = copy.deepcopy(img_ori)
+        img2 = copy.deepcopy(img_crop)
+        Mask = copy.deepcopy(Mask_crop)
+
+        scale = random.uniform(1.0,2.0)
+
+        # print('img2.shape',img2.shape)
+        print('Mask',Mask.shape)
+        size = [int(img2.shape[1] / scale) , int(img2.shape[0] / scale)]
+        img2 = cv2.resize(img2, (size[0], size[1]), interpolation=cv2.INTER_CUBIC)
+        Mask = cv2.resize(Mask, (size[0], size[1]), interpolation=cv2.INTER_CUBIC)
+
+
         r1,c1,ch1 = img1.shape
         r2,c2,ch2 = img2.shape
+
+        # print('img2.shape',img2.shape)
+        # print('Mask',Mask.shape)
+
 
         offset_range_x = [0,c1 - c2]
         offset_range_y = [0,r1 - r2]
@@ -152,7 +168,7 @@ class extract_obj:
         y_range = [r1 - r2 - offset_y, r1 - offset_y]
         
         # 取出右下角
-        roi = img1[y_range[0] :y_range[1], x_range[0] :x_range[1]]
+        roi = img1[y_range[0] :y_range[1], x_range[0] :x_range[1]] 
 
         mask_tmep = Mask
         Mask = 255 - Mask
