@@ -10,8 +10,8 @@ import sys
 import os
 
 class extract_obj:
-    bule_upper = [237,255,255]
-    bule_lower = [190,118,105]
+    bule_upper = [221,255,255]
+    bule_lower = [167,107,124]
     
     def __init__(self,file_name,Obj_Type):
         self.Makexml = xml()
@@ -25,6 +25,8 @@ class extract_obj:
         obj_roi = None
         hsv = HSV()
         mask = hsv.HSV_Mask(self.bule_upper,self.bule_lower,img)
+
+
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))  # define kernel (5,5)
 
         dilated = cv2.dilate(mask, kernel, 1)  # dilate
@@ -50,38 +52,49 @@ class extract_obj:
         box = cv2.boxPoints(rect)
         box = np.int0(box)
         # cv2.drawContours(img_debug, [box], 0, (0, 0, 255), line_width)
-        # print('[box]',[box])
-        # cv2.imshow('img_debug',img_debug)
+
+
+        x, y, w, h = cv2.boundingRect(box)
+        cv2.rectangle(img_debug,(x, y), (x + w, y + h), (0, 255, 0), line_width)
+
+
+        print('[box]',[box])
+
+
+
+
+
+        # # cv.drawContours(img_debug, [box], 0, (0, 0, 255), line_width)
+        # temp = np.zeros((img.shape[0],img.shape[1],1), np.uint8)
+
+        # cv2.drawContours(temp, [contours_list[1]], 0, 255, line_width)
+        # # cv2.imshow('temp',temp)
+        # # cv2.waitKey()
+
+        # # # 得四個角點
+        # point_list = self.GetPoint(temp)
+        # Corner_list = self.Get_corner([box],point_list)
+
+        # point_size = 2
+        # point_color = (0, 0, 255) # BGR
+        # thickness = 4 # 可以为 0 、4、8
+        # cnt = 0
+        # # 畫出腳點
+        # for point in Corner_list:
+        #     # print('p  oint',point)
+        #     cv2.circle(img_debug, (point[0],point[1]), point_size, point_color, thickness)
+        #     cv2.putText(img_debug, str(cnt + 1), (point[0] - 20, point[1]),
+        #     cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+        #     cnt = cnt + 1
+
+
+        # # mask,dst = self.fetch_roi(img,Corner_list)
+
+        # cv2.imshow('mask',mask)
         # cv2.waitKey()
-
-
-        # cv.drawContours(img_debug, [box], 0, (0, 0, 255), line_width)
-        temp = np.zeros((img.shape[0],img.shape[1],1), np.uint8)
-
-        cv2.drawContours(temp, [contours_list[1]], 0, 255, line_width)
-        # cv2.imshow('temp',temp)
-        # cv2.waitKey()
-
-        # 得四個角點
-        point_list = self.GetPoint(temp)
-        Corner_list = self.Get_corner([box],point_list)
-
-        point_size = 2
-        point_color = (0, 0, 255) # BGR
-        thickness = 4 # 可以为 0 、4、8
-        cnt = 0
-        # 畫出腳點
-        for point in Corner_list:
-            # print('p  oint',point)
-            cv2.circle(img_debug, (point[0],point[1]), point_size, point_color, thickness)
-            cv2.putText(img_debug, str(cnt + 1), (point[0] - 20, point[1]),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
-            cnt = cnt + 1
-        # cv2.imshow('img_debug',img_debug)
-        # cv2.waitKey()
-
-        mask,dst = self.fetch_roi(img,Corner_list)
-        return mask,[Corner_list[1][0],Corner_list[1][1],Corner_list[3][0] - Corner_list[1][0],Corner_list[3][1] - Corner_list[1][1]],dst
+        mask = 255 - mask
+        dst = cv2.bitwise_and(img, img, mask=mask)
+        return mask,[x, y, w, h],dst
     
     def fetch_roi(self,img,point):
         src = img.copy()
